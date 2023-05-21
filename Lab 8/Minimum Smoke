@@ -1,0 +1,36 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+vector<vector<int>> dp; 
+
+int mixturesSmoke(vector<int>& colors, int i, int j) {
+    if (i == j) {
+        return 0;  
+    }
+
+    if (dp[i][j] != -1) {
+        return dp[i][j];  
+    }
+    int minSmoke = INT_MAX;
+    for (int k = i; k < j; k++) {
+        int currSmoke = mixturesSmoke(colors, i, k) + mixturesSmoke(colors, k + 1, j) + ((colors[i] + colors[k + 1]) % 100) * colors[k + 1];
+        minSmoke = min(minSmoke, currSmoke);
+    }
+    return dp[i][j] = minSmoke;
+}
+
+int minimumSmoke(vector<int>& colors) {
+    int n = colors.size();
+    dp.resize(n, vector<int>(n, -1));
+    return mixturesSmoke(colors, 0, n - 1);
+}
+
+int main() {
+    vector<int> colors = {1, 2, 3, 4};
+    int minSmoke = minimumSmoke(colors);
+    cout << "Minimum amount of smoke generated: " << minSmoke << endl;
+    return 0;
+}
